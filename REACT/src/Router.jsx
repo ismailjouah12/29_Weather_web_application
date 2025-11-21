@@ -1,30 +1,53 @@
-import { createBrowserRouter } from "react-router-dom";
-import App from "./App.jsx";                
-import Guest from "./pages/Guest.jsx";
-import User from "./pages/User.jsx";
-import Login from "./components/Login.jsx";
-import SignUp from "./components/SignUp.jsx";
-import NotFound from "./components/NotFound.jsx";
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import App from "./App.jsx";
+import City from "./userComponents/City";
+import Favorites from "./userComponents/Favorites";
+import Login from "./guestComponents/Login.jsx";
+import Signup from "./guestComponents/Signup.jsx";
+import NotFound from "./sharedComponents/NotFound.jsx";
+import WeatherCards from "./sharedComponents/WeatherCards.jsx";
+
+
+
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Guest />,     
+    path: '/',
+    element: <App/>,
     children: [
-      {index: true, element: <App /> }, 
-      { path: "/guest/login", element: <Login /> },    
-      { path: "/guest/signup", element: <SignUp /> }
-               
+
+      {
+        index: true,
+        element: <WeatherCards/>
+      },
+
+      {
+        path: '/city',
+        element: <City/>
+      },
+
+      {
+        path: '/favorites',
+        element: <Favorites/>
+      },
+
+      {
+        path: '/login',
+        element: <Login/>
+      },
+
+      {
+        path: '/signup',
+        element: <Signup/>
+      }
+      
     ]
   },
 
-  { path: "user", element: <User /> },
-
-  { 
-    path: "*", 
-    element: <NotFound /> 
-  },  
-
-]);
+  {
+    path: "*",
+    element: <NotFound/>
+  }
+])
 
 export default router;
