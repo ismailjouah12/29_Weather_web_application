@@ -9,21 +9,13 @@ export default function Search(){
 
     const { user, setUser, token, setToken } = useUserContext();
     
-    if(token){
-    return (
-      <div className="">
-        <h1>UserSearch</h1>
-  
-        
-      </div>
-       
-    );
-    }
-
-    return (<div className="">
-
-       
-        <h1>Search</h1>
+    return (<div>
+        <form className="d-flex" role="search">
+            <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+            <button className="btn btn-outline-light" type="submit">Search</button>
+        </form>
     
     </div>)
 }
+
+

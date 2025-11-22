@@ -18,12 +18,12 @@ return (
 
   <div className="container bg-success p-3 rounded mb-3 d-flex justify-content-between align-items-center">
     <div className="d-flex align-items-center mb-3">
-      <h3 className="me-3 mb-0">Weather APP</h3>
+      <h4 className="text-white mb-0 me-2">WeatherApp</h4> 
       <img 
         src={weatherIcon} 
         alt="weather app logo" 
         className="img-fluid" 
-        style={{ width: "30px", height: "30px" }}   
+        style={{ width: "35px", height: "35px" }}   
       />
     </div>
 
