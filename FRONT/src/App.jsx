@@ -1,42 +1,38 @@
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import { Link } from 'react-router-dom';
-import axiosClient from "./axiosClient.js";
-import { useUserContext } from "./UserContext.jsx";import { Navigate, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { useUserContext } from "./UserContext.jsx";
+
 import Navigation from "./sharedComponents/Navigation.jsx";
 import Search from "./sharedComponents/Search.jsx";
 import weatherIcon from './assets/Weather.png';
+import "./index.css";
+
+
 
 export default function App() {
-const { user, setUser, token, setToken } = useUserContext();
- 
-       
+  return (
+    <div className="container-fluid p-4" style={{ minHeight: "100vh", backgroundColor: "#568eceff" }}>
 
-return (
-  <div className="container-fluid min-vh-100 d-flex flex-column p-3">
+      {/* Top Banner */}
+      <div className="container rounded mb-3 d-flex justify-content-between align-items-center flex-wrap">
+        <div className="d-flex align-items-center ">
+          <h4 className="mb-0 me-2">WeatherApp</h4> 
+          <img 
+            src={weatherIcon} 
+            alt="weather app logo"
+            style={{ width: "35px", height: "35px" }}
+          />
+        </div>
+        <Search />
+      </div>
 
-  <div className="container bg-success p-3 rounded mb-3 d-flex justify-content-between align-items-center">
-    <div className="d-flex align-items-center mb-3">
-      <h4 className="text-white mb-0 me-2">WeatherApp</h4> 
-      <img 
-        src={weatherIcon} 
-        alt="weather app logo" 
-        className="img-fluid" 
-        style={{ width: "35px", height: "35px" }}   
-      />
+      {/* Navigation BELOW */}
+      <Navigation />
+
+      {/* Pages */}
+      <Outlet />
     </div>
-
-    <Search />
-    <Navigation />
-  </div>
-  <div className="container bg-primary p-3 rounded flex-grow-1 align-items-center">
-    <Outlet />
-  </div>
-
-</div>
-
-);
+  );
 }
-
- 

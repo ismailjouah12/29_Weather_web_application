@@ -1,15 +1,18 @@
 import {createContext, useContext, useState} from "react";
 
 const UserContext = createContext({
-  currentUser: null,
+  user: null,
   token: null,
+  activePage: null,
   setUser: () => {},
   setToken: () => {},
+  setActivePage: () => {},
 })
 
 export const ContextProvider = ({children}) => {
   const [user, setUser] = useState({});
-  const [token, _setToken] = useState(null);
+  const [activePage, setActivePage] = useState("/");
+  const [token, _setToken] = useState(12);
 
   const setToken = (token) => {
     _setToken(token)
@@ -24,6 +27,8 @@ export const ContextProvider = ({children}) => {
     <UserContext.Provider value={{
       user,
       setUser,
+      activePage,
+      setActivePage,
       token,
       setToken,
     }}>

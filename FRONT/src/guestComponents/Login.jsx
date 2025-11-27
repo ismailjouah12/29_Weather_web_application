@@ -1,57 +1,87 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link } from 'react-router-dom';
 import axiosClient from "../axiosClient.js";
 import { useUserContext } from "../UserContext.jsx";
-import { useState , useRef } from 'react';
+import { useState } from 'react';
 
 export default function Login() {
 
-  const { user, setUser, token, setToken } = useUserContext();
+  const { setUser, setToken, activePage, setActivePage } = useUserContext();
   
-  const [email, setEmail] = useState()
-  const [password, setPassword] = useState()
-  const [message, setMessage] = useState(null) 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(null);
 
+  const onSubmit = (ev) => {
+    ev.preventDefault();
 
-  const onSubmit = ev => {
-    ev.preventDefault()
-
-    const userData = {
-      email: email,
-      password: password,
-    }
-    axiosClient.post('/login', userData)
-      .then(({data}) => {
-        setUser(data.user)
+    axiosClient.post('/login', { email, password })
+      .then(({ data }) => {
+        setUser(data.user);
         setToken(data.token);
       })
       .catch((err) => {
         const response = err.response;
         if (response && response.status === 422) {
-          setMessage(response.data.message)
+          setMessage(response.data.message);
         }
-      })
+      });
+  };
+  const handleClick = (e) => {
+    setMessage(null);
+    setActivePage("Signup");
+
   }
 
   return (
-    <div className="login-signup-form animated fadeInDown">
-      <div className="form">
-        <form onSubmit={onSubmit}>
-          <h1 className="title">Login </h1>
+    <div className="container d-flex justify-content-center align-items-center vh-100">
+      <div className="card shadow-lg p-4" style={{ maxWidth: "420px", width: "100%" }}>
+        
+        <h2 className="text-center mb-4">Login</h2>
 
-          {message &&
-            <div className="alert">
-              <p>{message}</p>
-            </div>
-          }
-          <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email"/>
-          <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password"/>
-          <button className="btn btn-block">Login</button>
-          <p className="message">Not registered ? <Link to="/signup">Create an account</Link></p>
+        {message && (
+          <div className="alert alert-danger text-center py-2">
+            {message}
+          </div>
+        )}
+
+        <form onSubmit={onSubmit}>
+          <div className="mb-3">
+            <label className="form-label">Email</label>
+            <input 
+              type="email" 
+              className="form-control"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Password</label>
+            <input 
+              type="password" 
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
+          <button className="btn btn-primary w-100 mt-2">
+            Login
+          </button>
         </form>
+
+        <p className="text-center mt-3">
+          Not registered?  
+          <Link to="/signup" onClick={(e) => handleClick(e) } className="ms-1">Create an account</Link>
+        </p>
+
       </div>
     </div>
-  )
+  );
 }

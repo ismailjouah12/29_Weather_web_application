@@ -7,6 +7,7 @@ import { RouterProvider } from "react-router-dom";
 import router from "./Router.jsx";
 import { ContextProvider } from "./UserContext.jsx";
 
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ContextProvider>
