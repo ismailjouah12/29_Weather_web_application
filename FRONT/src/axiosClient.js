@@ -2,7 +2,9 @@ import axios from "axios";
 import { useUserContext } from "./UserContext.jsx";
 
 const axiosClient = axios.create({
-  baseURL: `http://localhost:8000/api/`
+  baseURL: 'http://192.168.110.50:8000/api/'
+ // baseURL: "https://libbie-nonvanishing-increasedly.ngrok-free.dev/api"
+
 })
 
 axiosClient.interceptors.request.use((config) => {

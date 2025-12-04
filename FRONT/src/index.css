@@ -9,6 +9,7 @@
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   padding: 20px;
   transition: all 0.3s ease;
+ 
 }
 .card:hover {
   background: rgba(255, 255, 255, 1);
@@ -33,4 +34,7 @@
 .weather-temp {
   font-size: 2.5rem;
   font-weight: bold;
+}
+.nav-link:hover {
+  background: rgba(84, 140, 148, 0.9);
 }

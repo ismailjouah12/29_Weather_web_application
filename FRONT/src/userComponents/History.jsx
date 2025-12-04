@@ -6,13 +6,15 @@ import { useUserContext } from "../UserContext.jsx";
 import { useNavigate } from "react-router-dom";
 
 export default function History() {
+  const { user,setUser,token, setToken, activePage, setActivePage, msg, setMsg } = useUserContext();
+  
 
   const [history, setHistory] = useState([]);
 
   
   // Fetch history data on component mount
   useEffect(() => { 
-    axiosClient.get('/history')
+    axiosClient.get('/search/history')
       .then(({data}) => {
         setHistory(data);
       })
@@ -25,9 +27,13 @@ export default function History() {
  
 
   const clearHistory = () => {
-    axiosClient.delete('/history/clear')
+    axiosClient.delete('/search/history')
       .then(() => {
         setHistory([]);
+        setMsg("Cleared successfully!");
+        setTimeout(() => {
+          setMsg("");
+        }, 1500);
       })
       .catch((error) => {
         console.error("Error clearing history:", error);
@@ -60,18 +66,13 @@ export default function History() {
             <div className="card shadow-sm h-100">
 
               <div className="card-body text-center">
-                <img
-                  src={item.icon}
-                  alt="weather icon"
-                  className="img-fluid mb-3"
-                  style={{ width: "50px" }}
-                />
-                <h5 className="fw-bold">{item.city}</h5>
+                
+                <h5 className="fw-bold">{item.city_name}</h5>
                 <p className="text-muted mb-2" style={{ fontSize: "0.85rem" }}>
-                  Searched on: {item.date}
+                  Searched on: {item.created_at}
                 </p>
 
-                <Link to={`/city/${item.city}`} className="btn btn-outline-primary btn-sm w-100">
+                <Link to={`/city/${item.city_name}`} className="btn btn-outline-primary btn-sm w-100">
                   View Weather
                 </Link>
               </div>
@@ -80,6 +81,12 @@ export default function History() {
           </div>
         ))}
       </div>
+
+      {msg && (
+          <div className="alert alert-success text-center py-2">
+            {msg}
+          </div>
+        )}
 
     </div>
   );

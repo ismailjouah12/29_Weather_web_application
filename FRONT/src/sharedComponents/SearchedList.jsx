@@ -1,47 +1,52 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useUserContext } from "../UserContext.jsx";
 
-export default function SearcharchedList(suggestions){
-  const { user, setUser, city, setCity, token, setToken } = useUserContext();
-  // fake suggestions list
-  const suggestionsl = ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix",
-  "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose"];
+export default function SearcharchedList() {
+  const { user,setUser,token, setToken, activePage, setActivePage } = useUserContext();
   const navigate = useNavigate();
+  const params = useParams();
+
+  const [sugList, setsugList] = useState([]);
+
+  useEffect(() => {
+    if (params.suggestions) {
+      try {
+        const parsed = JSON.parse(params.suggestions);
+        setsugList(parsed);
+      } catch (e) {
+        console.error("Invalid suggestions param:", params.suggestions);
+      }
+    }
+  }, [params]);
 
   const handleClick = (s) => {
     if (token) {
       navigate(`/city/${s}`);
-      setCity("");
-      return;
-
+    } else {
+      navigate(`/${s}`);
     }
-    navigate(`/${s}`);
-    
     setCity("");
-    return;
   };
 
-    return (
-        <div>  
-          <h1>Result</h1>     
-           <div>
-           <ul className="list-group position-absolute w-100 mt-1 shadow">
-          {suggestionsl.map((s, index) => (
-            <li
-              key={index}
-              className="list-group-item list-group-item-action"
-              onClick={() => handleClick(s)}
-              style={{ cursor: "pointer" }}
-            >
-              {s}
-            </li>
-          ))}
-          </ul>
-            </div>
-        </div>
+  return (
+    <div>
+      <h1 className=' card card-title text-center'>Result</h1>
+      {!sugList && <div className='alert alert-danger'> no result found </div>}
 
-    );
+      <ul className="list-group position-absolute w-100 mt-1 shadow">
+        {sugList.map((s, index) => (
+          <li
+            key={index}
+            className="list-group-item list-group-item-action"
+            onClick={() => handleClick(s)}
+            style={{ cursor: "pointer" }}
+          >
+            {s}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }

@@ -4,11 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import axiosClient from "../axiosClient.js";
 import { useUserContext } from "../UserContext.jsx";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import SearcharchedList from './SearchedList.jsx';
 
 
 export default function Search() {
 
-  const { token } = useUserContext();
+  const { user,setUser,token, setToken, activePage, setActivePage } = useUserContext();
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
   const [debouncedCity, setDebouncedCity] = useState("");
@@ -22,9 +23,9 @@ export default function Search() {
     return () => clearTimeout(timer);
   }, [city]);
 
-  // her we fetch  suggestions cities from the backend
+  // here we fetch  suggestions cities from the backend
   useEffect(() => {
-    const searchCity = async () => {
+    const searchCity = () => {
       if (!debouncedCity.trim()) {
         setSuggestions([]);
         return;
@@ -32,18 +33,23 @@ export default function Search() {
 
       setLoading(true);
 
-      try {
-        const { data } = await axiosClient.get(`/cities/search?city=${debouncedCity}`);
-        setSuggestions(data.map(c => c.name));
-      } catch (err) {
-        setSuggestions([]);
-      }
+      axiosClient.get(`cities/search?q=${debouncedCity}`)
+        .then((response) => {
+          const results = response.data.results; 
+          
 
-      setLoading(false);
+          setSuggestions(results.map(city => city.name+", "+city.country));
+        })
+        .catch((err) => {
+          setSuggestions([]);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     };
 
-    searchCity();
-  }, [debouncedCity]);
+      searchCity();
+      }, [debouncedCity]);
 
   // When clicking suggestion
   const handleClick = (cityName) => {
@@ -60,8 +66,7 @@ export default function Search() {
   };
 
   // when searching for input 
-  const handleSearch = (e) => {
-    e.preventDefault();
+  const handleSearch = () => {
 
     if (suggestions.length === 1) {
       let target = suggestions[0];
@@ -72,8 +77,7 @@ export default function Search() {
       setCity("");
       return;
     }
-
-    navigate(`/SearchedList/${suggestions}`);
+    navigate(`/searchedList/${encodeURIComponent(JSON.stringify(suggestions))}`);
     setCity("");
   };
 
@@ -81,9 +85,9 @@ export default function Search() {
     <div className="mt-4 position-relative">
 
       {/* Search Bar */}
-      <form onSubmit={handleSearch} className="d-flex gap-2">
+      <div  className="d-flex gap-2">
 
-        <div className="input-group">
+        <div className="input-group shadow">
           <span className="input-group-text bg-primary text-white">
             <i className="bi bi-search"></i>
           </span>
@@ -97,10 +101,10 @@ export default function Search() {
           />
         </div>
 
-        <button className="btn btn-primary" type="submit">
+        <button onClick={handleSearch} className="btn btn-primary" type="submit">
           Search
         </button>
-      </form>
+      </div>
 
       {/* Loading text */}
       {loading && (

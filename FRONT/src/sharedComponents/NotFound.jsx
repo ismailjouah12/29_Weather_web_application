@@ -1,7 +1,9 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+ 
 export default function NotFound() {
     return (
-      <div className="">
-        <h1>404 - Not Found</h1>
+      <div >
+        <h1 className=" text-danger">404 - Not Found</h1>
       </div>
     );
   }

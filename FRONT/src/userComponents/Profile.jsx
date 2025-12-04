@@ -4,107 +4,140 @@ import axiosClient from "../axiosClient.js";
 import { useUserContext } from "../UserContext.jsx";
 
 export default function Profile() {
+  const { user,setUser,token, setToken, activePage, setActivePage } = useUserContext();
 
- const  { user } = useUserContext();
+  const [editingField, setEditingField] = useState(null); 
+  const [value, setValue] = useState("");
 
-  const [editMode, setEditMode] = useState(false);
-  const [form, setForm] = useState(user);
-
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
+  const startEditing = (field) => {
+    setEditingField(field);
+    setValue(field === "password" ? "" : user[field]);
   };
 
-  const handleSave = () => {
-    axiosClient.put('/user/profile', form)
-      .then(({ data }) => {
-        setUser(data.user);
-        setEditMode(false);
-      })
-      .catch((err) => {
+  const cancelEditing = () => {
+    setEditingField(null);
+    setValue("");
+  };
+
+  const saveField = () => {
+  let endpoint = "";
+  let payload = {};
+
+  if (editingField === "name") {
+    endpoint = "/profile/name";
+    payload = { new_name: value }; // assuming name endpoint expects "name"
+  } else if (editingField === "email") {
+    endpoint = "/profile/email";
+    payload = { new_email: value }; // match Laravel validation
+  } else if (editingField === "password") {
+    endpoint = "/profile/password";
+    payload = {
+      new_password: value,
+      new_password_confirmation: value // required for 'confirmed' validation
+    };
+  }
+
+  axiosClient
+    .put(endpoint, payload)
+    .then(({ data }) => {
+      setUser(data.user);
+      cancelEditing();
+    })
+    .catch((err) => {
+      if (err.response && err.response.data.errors) {
+        console.error("Validation errors:", err.response.data.errors);
+      } else {
         console.error("Error updating profile:", err);
-      });
+      }
+    });
+};
 
-  };
 
 
   return (
     <div className="container mt-5" style={{ maxWidth: "600px" }}>
-
-      <h2 className="text-center mb-4 fw-bold text-primary">Your Profile</h2>
+      <h2 className="text-center mb-4 fw-bold text-dark">Profile</h2>
 
       <div className="card p-4 shadow-lg">
 
-        {/* ---------- VIEW MODE ---------- */}
-        {!editMode && (
-          <>
-            <p><strong>Name:</strong> {user.name}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Country:</strong> {user.country}</p>
-
-            <button
-              className="btn btn-primary mt-3 w-100"
-              onClick={() => setEditMode(true)}
-            >
-              Edit Profile
-            </button>
-          </>
-        )}
-
-        {/* ---------- EDIT MODE ---------- */}
-        {editMode && (
-          <>
-            <div className="mb-3">
-              <label className="form-label fw-bold">Name</label>
+        {/* NAME */}
+        <div className="mb-3">
+          <label className="form-label fw-bold">Name</label>
+          {editingField === "name" ? (
+            <>
               <input
                 type="text"
-                name="name"
                 className="form-control"
-                value={form.name}
-                onChange={handleChange}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
               />
-            </div>
+              <div className="mt-2 d-flex gap-2">
+                <button className="btn btn-success w-50" onClick={saveField}>Save</button>
+                <button className="btn btn-secondary w-50" onClick={cancelEditing}>Cancel</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p>{user?.name}</p>
+              <button className="btn btn-outline-primary btn-sm" onClick={() => startEditing("name")}>
+                Change
+              </button>
+            </>
+          )}
+        </div>
 
-            <div className="mb-3">
-              <label className="form-label fw-bold">Email</label>
+        {/* EMAIL */}
+        <div className="mb-3">
+          <label className="form-label fw-bold">Email</label>
+          {editingField === "email" ? (
+            <>
               <input
                 type="email"
-                name="email"
                 className="form-control"
-                value={form.email}
-                onChange={handleChange}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
               />
-            </div>
+              <div className="mt-2 d-flex gap-2">
+                <button className="btn btn-success w-50" onClick={saveField}>Save</button>
+                <button className="btn btn-secondary w-50" onClick={cancelEditing}>Cancel</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p>{user?.email}</p>
+              <button className="btn btn-outline-primary btn-sm" onClick={() => startEditing("email")}>
+                Change
+              </button>
+            </>
+          )}
+        </div>
 
-            <div className="mb-3">
-              <label className="form-label fw-bold">Country</label>
+        {/* PASSWORD */}
+        <div className="mb-3">
+          <label className="form-label fw-bold">Password</label>
+          {editingField === "password" ? (
+            <>
               <input
-                type="text"
-                name="country"
+                type="password"
                 className="form-control"
-                value={form.country}
-                onChange={handleChange}
+                placeholder="Enter new password"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
               />
-            </div>
-
-            <div className="d-flex gap-3 mt-3">
-              <button className="btn btn-success w-50" onClick={handleSave}>
-                Save
+              <div className="mt-2 d-flex gap-2">
+                <button className="btn btn-success w-50" onClick={saveField}>Save</button>
+                <button className="btn btn-secondary w-50" onClick={cancelEditing}>Cancel</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p>*********</p>
+              <button className="btn btn-outline-primary btn-sm" onClick={() => startEditing("password")}>
+                Change
               </button>
-              <button
-                className="btn btn-secondary w-50"
-                onClick={() => {
-                  setForm(user);
-                  setEditMode(false);
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
 
       </div>
     </div>

@@ -10,6 +10,9 @@ import Profile from "./userComponents/Profile.jsx";
 import SearchedList  from "./sharedComponents/SearchedList.jsx";
 import History from "./userComponents/History.jsx";
 import About from "./sharedComponents/About.jsx";
+import AboutUs from "./sharedComponents/About.jsx"; 
+import Admin from "./Admin.jsx";
+import Events from "./userComponents/Events.jsx"
 
 
 
@@ -19,40 +22,43 @@ const router = createBrowserRouter([
     path: '/',
     element: <App/>,
     children: [
-
       {
-        index: true,
+        path: "/:cityName",
         element: <Home/>
       },
 
       {
-        path: ":cityName",
+        path: "/" ,
         element: <Home/>
       },
 
       {
-        path: "city",
+        path: "/city/:cityName",
         element: <City/>
       },
       {
-        path:  "searchedList",
+        path: "/searchedList/:suggestions",
         element: <SearchedList/>
       },
       {
-        path: "history",
+        path: "/history",
         element: <History/>
       },
 
       {
-        path: "favorites",
+        path: "/favorites",
         element: <Favorites/>
       },
+
       {path: "profile",
        element: <Profile/>
       },
-
       {
-        path: "login",
+        path: "/events",
+        element: <Events/>
+      },
+      {
+        path: "/login",
         element: <Login/>
       },
 
@@ -68,6 +74,11 @@ const router = createBrowserRouter([
     ]
   },
 
+  {
+    path: "/admin",
+    element: <Admin/>
+  },
+  
   {
     path: "*",
     element: <NotFound/>
