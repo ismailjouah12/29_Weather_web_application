@@ -356,14 +356,9 @@ export default function Home() {
                   <div className="card-body p-4 p-md-5">
                     <h4 className="text-dark mb-3">
                       <i className="fas fa-star me-2 text-warning"></i>
-                      Unlock Premium Features
+                      For more features
                     </h4>
-                    <ul className="list-unstyled text-muted mb-4">
-                      <li className="mb-2"><i className="fas fa-check-circle text-success me-2"></i>Save favorite cities</li>
-                      <li className="mb-2"><i className="fas fa-check-circle text-success me-2"></i>Detailed 7-day forecasts</li>
-                      <li className="mb-2"><i className="fas fa-check-circle text-success me-2"></i>Weather alerts</li>
-                      <li><i className="fas fa-check-circle text-success me-2"></i>Hourly breakdown</li>
-                    </ul>
+                   
                     <Link to="/signup" className="btn btn-primary btn-lg rounded-pill px-4">
                       <i className="fas fa-user-plus me-2"></i>
                       Create Free Account

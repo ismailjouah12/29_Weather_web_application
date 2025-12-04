@@ -220,7 +220,7 @@ export default function City() {
   };
 
   const safeHourlyData = forecast.forecastday?.[0]?.hour || [];
-  const safeForecastDays = forecast.forecastday?.slice(0, 5) || [];
+  const safeForecastDays = forecast.forecastday?.slice(0, 3) || [];
 
   const getIconUrl = (icon) => {
     if (!icon) return "https://cdn.weatherapi.com/weather/64x64/day/113.png";
@@ -261,19 +261,19 @@ export default function City() {
       <div className="row mb-4">
         <div className="col-12">
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-            <div>
-              <h1 className="display-6 fw-bold text-dark mb-1">
+            <div >
+              <h1 className="display-6 fw-bold text-light mb-1">
                 <i className="fas fa-map-marker-alt me-2 text-primary"></i>
                 {cityName}
               </h1>
-              <p className="text-muted mb-0">
+              <p className="text text-light mb-0">
                 {location?.region && `${location.region}, `}{location?.country}
               </p>
             </div>
             <div className="d-flex gap-2">
               <AddToFav city={cityName}/>
               <button 
-                className="btn glass-effect border-0 rounded-pill px-4 py-2"
+                className="btn btn-outline-light bg-success border-0 rounded-pill px-4 py-2"
                 onClick={() => setIsCelsius(!isCelsius)}
                 style={{
                   background: 'rgba(102, 126, 234, 0.15)',
@@ -471,7 +471,7 @@ export default function City() {
         <div className="card-header bg-transparent border-0 py-3">
           <h5 className="fw-bold mb-0 text-dark">
             <i className="fas fa-calendar-alt me-2 text-primary"></i>
-            5-Day Forecast
+            3-Day Forecast
           </h5>
         </div>
         <div className="card-body">

@@ -4,12 +4,11 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Outlet } from "react-router-dom";
 import { useUserContext } from "./UserContext.jsx";
 import { useEffect,useState } from "react";
-
 import Navigation from "./sharedComponents/Navigation.jsx";
 import Search from "./sharedComponents/Search.jsx";
 import weatherIcon from './assets/Weather.png';
 import "./index.css";
-import Back from"./assets/back.jpg"
+import Back from"./assets/back_v1.avif"
 
 
 
@@ -34,7 +33,7 @@ export default function App() {
             style={{ width: "35px", height: "35px" }}
           />
         </div>
-        <div className=" container " >
+        <div className=" container-fluid " >
           <Search />
         </div>
         
