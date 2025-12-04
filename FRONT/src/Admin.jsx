@@ -13,6 +13,8 @@ export default function Admin() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [message, setMessage] = useState(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [selectedUserEvents, setSelectedUserEvents] = useState(null);
+  const [eventsLoading, setEventsLoading] = useState(false);
 
   useEffect(() => {
     // Give context time to restore user from localStorage
@@ -30,9 +32,11 @@ export default function Admin() {
 
   const fetchUsers = () => {
     setLoading(true);
-    axiosClient.get('/users')
+    axiosClient.get('/admin/users')
       .then(({ data }) => {
-        setUsers(data.data || data);
+        console.log(data)
+        //JSON.parse(data.users);
+        setUsers(Object.values(data.users));
         setLoading(false);
       })
       .catch((err) => {
@@ -47,12 +51,37 @@ export default function Admin() {
         .then(() => {
           setMessage('User deleted successfully!');
           fetchUsers();
+          // Clear events if we're viewing the deleted user's events
+          if (selectedUserEvents && selectedUserEvents.userId === userId) {
+            setSelectedUserEvents(null);
+          }
           setTimeout(() => setMessage(null), 3000);
         })
         .catch((err) => {
           setError(err.response?.data?.message || 'Failed to delete user');
         });
     }
+  };
+
+  const handleShowEvents = (userId, userName) => {
+    setEventsLoading(true);
+    axiosClient.get(`/admin/users/${userId}/events`)
+      .then(({ data }) => {
+        setSelectedUserEvents({
+          userId,
+          userName,
+          events: data.events || []
+        });
+        setEventsLoading(false);
+      })
+      .catch((err) => {
+        setError(err.response?.data?.message || 'Failed to fetch events');
+        setEventsLoading(false);
+      });
+  };
+
+  const handleCloseEvents = () => {
+    setSelectedUserEvents(null);
   };
 
   const handleLogout = () => {
@@ -108,8 +137,77 @@ export default function Admin() {
         </div>
       )}
 
+      {error && (
+        <div className="alert alert-danger alert-dismissible fade show" role="alert">
+          {error}
+          <button type="button" className="btn-close" onClick={() => setError(null)}></button>
+        </div>
+      )}
 
-    
+      {/* Events Modal */}
+      {selectedUserEvents && (
+        <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+              <div className="modal-header bg-info text-white">
+                <h5 className="modal-title">
+                  Events for {selectedUserEvents.userName}
+                </h5>
+                <button 
+                  type="button" 
+                  className="btn-close btn-close-white"
+                  onClick={handleCloseEvents}
+                ></button>
+              </div>
+              <div className="modal-body">
+                {eventsLoading ? (
+                  <div className="text-center py-4">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                ) : selectedUserEvents.events.length === 0 ? (
+                  <p className="text-center text-muted">No events found for this user</p>
+                ) : (
+                  <div className="table-responsive">
+                    <table className="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>Event ID</th>
+                          <th>Title</th>
+                          <th>Description</th>
+                          <th>Date</th>
+                          <th>Location</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedUserEvents.events.map((event) => (
+                          <tr key={event.id || event._id}>
+                            <td>{event.id || event._id}</td>
+                            <td>{event.title}</td>
+                            <td>{event.description}</td>
+                            <td>{new Date(event.date).toLocaleDateString()}</td>
+                            <td>{event.location}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button 
+                  type="button" 
+                  className="btn btn-secondary"
+                  onClick={handleCloseEvents}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="card shadow-sm">
         <div className="card-header bg-primary text-white">
@@ -132,7 +230,7 @@ export default function Admin() {
                     <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Role</th>
+                    <th>Events</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -143,13 +241,16 @@ export default function Admin() {
                       <td>{u.name}</td>
                       <td>{u.email}</td>
                       <td>
-                        <span className={`badge ${u.role === 'admin' ? 'bg-danger' : 'bg-info'}`}>
-                          {u.role}
-                        </span>
+                        <button 
+                          onClick={() => handleShowEvents(u.id || u._id, u.name)} 
+                          className='btn btn-sm btn-outline-info'
+                        >
+                          Show Events
+                        </button>
                       </td>
                       <td>
                         <button 
-                          className="btn btn-sm btn-danger"
+                          className="btn btn-sm btn-outline-danger"
                           onClick={() => handleDeleteUser(u.id || u._id)}
                         >
                           Delete

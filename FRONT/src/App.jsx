@@ -34,7 +34,10 @@ export default function App() {
             style={{ width: "35px", height: "35px" }}
           />
         </div>
-        <Search />
+        <div className=" container " >
+          <Search />
+        </div>
+        
       </div>
 
       {/* Navigation BELOW */}

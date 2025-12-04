@@ -13,6 +13,10 @@ export default function Events() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   const [message, setMessage] = useState(null);
+    const getIconUrl = (icon) => {
+    if (!icon) return "https://cdn.weatherapi.com/weather/64x64/day/113.png";
+    return icon.startsWith("//") ? `https:${icon}` : icon;
+  };
   
   const [formData, setFormData] = useState({
     title: '',
@@ -91,7 +95,7 @@ export default function Events() {
       return;
     }
 
-    axiosClient.put(`/events/${editingId}`, formData)
+    axiosClient.put(`/user/events/${editingId}`, formData)
       .then(() => {
         setMessage('Event updated successfully!');
         resetForm();
@@ -106,7 +110,7 @@ export default function Events() {
   // Delete event
   const handleDeleteEvent = (eventId) => {
     if (window.confirm('Are you sure you want to delete this event?')) {
-      axiosClient.delete(`/events/${eventId}`)
+      axiosClient.delete(`/user/events/${eventId}`)
         .then(() => {
           setMessage('Event deleted successfully!');
           fetchEvents();
@@ -159,6 +163,8 @@ export default function Events() {
               resetForm();
               setShowForm(true);
             }}
+            disabled={events.length >= 5}
+            title={events.length >= 5 ? "Maximum 5 events allowed" : ""}
           >
             + Add New Event
           </button>
@@ -271,12 +277,22 @@ export default function Events() {
               <div className="col-md-6 mb-3">
                 <label className="form-label text-muted small">Location</label>
                 <p className="fw-bold fs-5">{selectedEvent.location}</p>
+                <div className="d-flex align-items-center gap-3 mt-3">
+                  <img 
+                    src={getIconUrl(selectedEvent.forecast_icon)} 
+                    width={60} 
+                    alt="weather"
+                  />
+                  <b className="text-primary fs-4">{selectedEvent.forecast_temperature} °C</b>
+                </div>
               </div>
+
               <div className="col-md-6 mb-3">
                 <label className="form-label text-muted small">Date & Time</label>
                 <p className="fw-bold fs-5">
                   {new Date(selectedEvent.date).toLocaleString()}
                 </p>
+               
               </div>
               <div className="col-md-12 mb-3">
                 <label className="form-label text-muted small">Description</label>
@@ -322,14 +338,18 @@ export default function Events() {
       {/* Events List */}
       {!loading && events.length > 0 && (
         <div className="row">
-          {events.map((event) => (
+          {events.slice(0, 5).map((event) => (
             <div key={event.id || event._id} className="col-md-6 col-lg-4 mb-4">
               <div className="card shadow-sm h-100 border-0 transition-all" style={{ cursor: 'pointer' }}>
                 <div className="card-body">
                   <h5 className="card-title fw-bold text-primary">{event.title}</h5>
                   <p className="card-text text-muted">
-                    <i className="bi bi-geo-alt"></i> {event.location}
-                  </p>
+                    <i className="bi bi-geo-alt"></i> {event.location}    <b className=' text text-primary'> {event.forecast_temperature} °C</b>      <img 
+                      src={getIconUrl(event.forecast_icon)} 
+                      width={45} 
+                      alt="" 
+                      className="mx-2"
+                    /></p>
                   <p className="card-text small">
                     <i className="bi bi-calendar-event"></i> {new Date(event.date).toLocaleString()}
                   </p>
@@ -372,15 +392,7 @@ export default function Events() {
           </div>
           <h5 className="text-muted">No events yet</h5>
           <p className="text-muted mb-4">Create your first event to get started</p>
-          <button 
-            className="btn btn-primary btn-lg"
-            onClick={() => {
-              resetForm();
-              setShowForm(true);
-            }}
-          >
-            Create First Event
-          </button>
+          
         </div>
       )}
     </div>
