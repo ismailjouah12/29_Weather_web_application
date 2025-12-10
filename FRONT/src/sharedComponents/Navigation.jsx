@@ -13,7 +13,7 @@ export default function Navigation() {
   const userNav = [
     { name: "Profile", path: "/profile" },
     { name: "Events", path: "/events"},
-    { name: "Favorites", path: "/favorites" },
+    { name: "Favorites", path: "/favorites" },  /// nav for the user
     { name: "History", path: "/history" },
     { name: "About", path: "/about"},
     { name: "Log out", path: null },
@@ -21,7 +21,7 @@ export default function Navigation() {
 
   const guestNav = [
     { name: "Login", path: "/login" },
-    { name: "Register", path: "/signup" },
+    { name: "Register", path: "/signup" },  //nav for the guest
     { name: "About", path: "/about" },
   ];
 
@@ -34,7 +34,7 @@ export default function Navigation() {
       navigate("/login");
     });
   };
-    const handleHomeClick = () => {
+  const handleHomeClick = () => {
     navigate("/");
   };
 

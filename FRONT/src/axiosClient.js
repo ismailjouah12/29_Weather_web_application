@@ -5,8 +5,8 @@
 import { useUserContext } from "./UserContext.jsx";
 
 const axiosClient = axios.create({
-  baseURL: 'http://192.168.110.50:8000/api/'
-  //baseURL: "http://localhost:8000/api",
+  //baseURL: 'http://10.2.9.149:8000/api/'
+  baseURL: "http://localhost:8000/api/",
  // baseURL: "https://libbie-nonvanishing-increasedly.ngrok-free.dev/api"
 
 })

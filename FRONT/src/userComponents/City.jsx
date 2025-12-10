@@ -59,7 +59,6 @@ function AddToFav({ city }) {
         setMessage("");
       })
       .catch((err) => {
-        console.error("Error adding favorite:", err);
         setMessage("Failed to add to favorites");
       })
       .finally(() => setLoading(false));
@@ -138,7 +137,7 @@ export default function City() {
     return (<NotFound/>);
   }
 
-  if (loading) {
+  if (loading) {  //waiting for data to be fetched
     return (
       <div className="container py-4" style={{
         
@@ -155,9 +154,9 @@ export default function City() {
     );
   }
 
-  if (error) {
+  if (error) {  // when fetchinf data failed
     return (
-      <div className="container py-4" style={{
+      <div className="container py-4" style={{  
         
         minHeight: '100vh'
       }}>
@@ -466,7 +465,7 @@ export default function City() {
         </div>
       </div>
 
-      {/* 5-Day Forecast */}
+      {/* 3-Day Forecast */}
       <div className="card glass-effect border-0 shadow-sm mb-4">
         <div className="card-header bg-transparent border-0 py-3">
           <h5 className="fw-bold mb-0 text-dark">

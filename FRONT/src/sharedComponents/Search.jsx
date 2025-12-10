@@ -85,7 +85,7 @@ export default function Search() {
     <div className="mt-4 position-relative">
 
       {/* Search Bar */}
-      <div  className="d-flex gap-2">
+      <div  className="d-flex gap-2 ">
 
         <div className="input-group shadow">
           <span className="input-group-text bg-primary text-white">
