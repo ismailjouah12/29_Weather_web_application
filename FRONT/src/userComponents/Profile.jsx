@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axiosClient from "../axiosClient.js";
 import { useUserContext } from "../UserContext.jsx";
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function Profile() {
   const { user, setUser, token, setToken, activePage, setActivePage } = useUserContext();
@@ -10,6 +11,7 @@ export default function Profile() {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const navigate = useNavigate();
 
   const startEditing = (field) => {
     setEditingField(field);
@@ -49,10 +51,10 @@ export default function Profile() {
     let payload = {};
 
     if (editingField === "name") { //changing user name
-      endpoint = "/profile/name";
+      endpoint = '/profile/name';
       payload = { new_name : value };
     } else if (editingField === "email") { //changing user email
-      endpoint = "/profile/email";
+      endpoint = '/profile/email';
       payload = { new_email : value };
     } else if (editingField === "password") { //changing user password
       endpoint = "/profile/password";
@@ -94,6 +96,16 @@ export default function Profile() {
       case 'password': return 'bi-shield-lock';
       default: return 'bi-gear';
     }
+  };
+
+  // Sign out function 
+  const signOut = () => {
+    console.log("Signing out...");
+    axiosClient.post('/logout').then(() => {
+      setUser(null);
+      setToken(null);
+      navigate("/login");
+    });
   };
 
 
@@ -409,7 +421,7 @@ export default function Profile() {
             <div className="card-footer bg-light border-top py-4">
               <div className="row align-items-center">
                 
-                  <button className="btn btn-outline-danger rounded-pill px-4">
+                  <button onClick={() => signOut()} className="btn btn-outline-danger rounded-pill px-4">
                     <i className="bi bi-box-arrow-right me-2"></i>
                     Sign Out  
                   </button>

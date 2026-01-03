@@ -82,7 +82,7 @@ export default function Search() {
   };
 
   return (
-    <div className="mt-4 position-relative">
+    <div className="mt-4 position-relative ">
 
       {/* Search Bar */}
       <div  className="d-flex gap-2 ">

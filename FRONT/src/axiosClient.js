@@ -1,7 +1,7 @@
 
   
 
-  import axios from "axios";
+import axios from "axios";
 import { useUserContext } from "./UserContext.jsx";
 
 const axiosClient = axios.create({

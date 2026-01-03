@@ -8,7 +8,7 @@ import Navigation from "./sharedComponents/Navigation.jsx";
 import Search from "./sharedComponents/Search.jsx";
 import weatherIcon from './assets/Weather.png';
 import "./index.css";
-import Back from"./assets/back_v1.avif"
+import Back from"./assets/back_v1.avif";
 
 
 
@@ -17,8 +17,7 @@ export default function App() {
   
   
   return (
-    <div className="container-fluid p-4" style={{ minHeight: "100vh", backgroundColor: "#568eceff",
-    backgroundImage: `url(${Back})`,
+    <div className="container-fluid p-4" style={{ minHeight: "100vh", backgroundColor: "#41a2f6ff",
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat" }}>
@@ -40,7 +39,7 @@ export default function App() {
       </div>
 
       {/* Navigation BELOW */}
-      <Navigation />
+      <Navigation/>
 
       {/* Pages */}
       <Outlet />
